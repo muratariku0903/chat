@@ -22,7 +22,7 @@ const rootReducer = combineReducers({
     user: userSlice.reducer,
 })
 
-export type RootState = ReturnType<typeof rootReducer>
+export type RootState = ReturnType<typeof rootReducer>;
 
 const persistConfig = {
     key: 'chat',

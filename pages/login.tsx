@@ -12,7 +12,7 @@ const LoginPage: NextPage = () => {
 
     console.log(user,'loginPage');
 
-    // if (user.isLogin) router.push('/');
+    if (user.isLogin) router.push('/');
 
 
     return (

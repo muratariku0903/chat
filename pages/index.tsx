@@ -1,19 +1,36 @@
 import { useEffect, useState } from 'react';
 import type { NextPage } from 'next';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../store';
-import { getAuth, signOut } from 'firebase/auth';
-import { app } from '../firebase/db';
-import { userSlice } from '../store/user';
+import { getPosts, Post } from '../lib/posts';
+import { firebaseApi } from '../firebase/api';
+import { Inquiry } from './contact';
+
+// case SSG ビルド時に一回だけデータを取得したい
+// export const getServerSideProps = async () => {
+//     const inquiries = await firebaseApi.fetchInquiries();
+//     return {
+//         props: {
+//             inquiries,
+//         }
+//     }
+// }
+
+type HomePageProps = {
+    inquiries: Inquiry[];
+}
 
 
-const Home: NextPage = () => {
+const Home: NextPage<HomePageProps> = ({ }) => {
+    const [inquiries, setInquiries] = useState<Inquiry[]>([]);
     const [isLoading, setIsLoading] = useState(false);
-    const dispatch = useDispatch();
-    const user = useSelector((state: RootState) => state.user);
     const router = useRouter();
     const isReady = router.isReady;
+    useEffect(() => {
+        firebaseApi.fetchInquiries().then(res => {
+            setInquiries(res);
+        });
+    }, []);
 
     useEffect(() => {
         if (isReady) {
@@ -25,31 +42,20 @@ const Home: NextPage = () => {
         return <div>loading..</div>;
     }
 
-
-    console.log(user, 'homepage');
-
-    if (!user.isLogin) router.push('/login');
-
-    const logout = async (): Promise<void> => {
-        const auth = getAuth(app);
-        try {
-            auth.signOut().then(res => {
-                // console.log('logout');
-            }).catch(e => {
-                console.log(e);
-            })
-        } catch (e) {
-            console.error(e);
-        }
-        dispatch(userSlice.actions.reset());
-    }
-
     return (
         <div>
-            <h1>home</h1>
-            <button onClick={logout}>ログアウト</button>
+            {inquiries.map((inquiry, idx) => (
+                <article key={idx}>
+                    <h2>this is inquiry</h2>
+                    <Link href={`/inquiries/${inquiry.id}`}>
+                        <a href={`/inquiries/${inquiry.id}`}>リンク</a>
+                    </Link>
+                    <p>{inquiry.name}</p>
+                    <p>{inquiry.title}</p>
+                </article>
+            ))}
         </div>
     )
 }
 
-export default Home
+export default Home;

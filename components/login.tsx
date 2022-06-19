@@ -20,9 +20,6 @@ const Login: React.FC = () => {
     const { login } = useUser();
 
 
-    if (user.isLogin) router.push('/');
-
-
     return (
         <Fragment>
             <form action="">
