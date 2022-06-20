@@ -26,7 +26,6 @@ const ContactPage: NextPage = () => {
     const postInquiry = async (input: Inquiry): Promise<void> => {
         const auth = getAuth(app);
         try {
-            // 匿名でログインする
             await signInAnonymously(auth)
                 .then(res => {
                     const uid = res.user.uid;
@@ -43,7 +42,7 @@ const ContactPage: NextPage = () => {
 
     return (
         <div>
-            <h2> お問い合わせ</ h2>
+            <h2>お問い合わせ</ h2>
             <form action="">
                 <input type="text" value={input.title} onChange={(e) => setInput({ ...input, title: e.target.value })} /><br />
                 <input type="text" value={input.name} onChange={(e) => setInput({ ...input, name: e.target.value })} /><br />

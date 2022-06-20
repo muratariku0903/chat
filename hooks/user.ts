@@ -1,4 +1,4 @@
-import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
+import { getAuth, signInWithEmailAndPassword, signOut, signInAnonymously } from 'firebase/auth';
 import { useDispatch } from 'react-redux';
 import { userSlice } from '../store/user';
 import { db, app } from '../firebase/db';
@@ -19,10 +19,31 @@ export const useUser = () => {
         await signInWithEmailAndPassword(auth, email, password)
             .then(userCredential => {
                 dispatch(userSlice.actions.setUser({ name: 'tanaka', email, password }));
+                console.log('login');
             }).catch(e => {
                 console.error(e);
             });
     }
 
-    return { login };
+    const logout = async (): Promise<void> => {
+        const auth = getAuth(app);
+        await signOut(auth)
+            .then(() => {
+                console.log('logout');
+            }).catch(e => {
+                console.error(e);
+            })
+    }
+
+    const loginAnonymously = async (): Promise<void> => {
+        const auth = getAuth(app);
+        await signInAnonymously(auth)
+            .then(userCredential => {
+                console.log('login anonymously');
+            }).catch(e => {
+                console.error(e);
+            });
+    }
+
+    return { login, logout, loginAnonymously };
 }

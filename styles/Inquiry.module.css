@@ -1,0 +1,19 @@
+.wrapper {
+    padding: 30px;
+}
+
+.input_wrapper {
+    margin-top: 20px;
+}
+
+.message_wrapper {
+    margin-top: 20px;
+    padding: 10px;
+    border: 1px solid black;
+}
+
+.message {
+    padding: 10px;
+    border: 1px solid black;
+    margin-bottom: 10px;
+}

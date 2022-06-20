@@ -10,8 +10,6 @@ const LoginPage: NextPage = () => {
     const user = useSelector((state: RootState) => state.user);
     const router = useRouter();
 
-    console.log(user,'loginPage');
-
     if (user.isLogin) router.push('/');
 
 
