@@ -10,7 +10,8 @@ import styles from '../../styles/Inquiry.module.css';
 import { getAuth } from "firebase/auth";
 import { Message } from '../../firebase/api';
 import { useUser } from "../../hooks/user";
-
+import { db } from "../../firebase/db";
+import { serverTimestamp, Timestamp, FieldValue, collection, query, orderBy, onSnapshot } from "firebase/firestore";
 
 type PageProps = {
     inquiry: Inquiry;
@@ -25,14 +26,11 @@ const InquiryPage: NextPage<PageProps> = ({ inquiry }) => {
     const router = useRouter();
     const isReady = router.isReady;
     const [isLoading, setIsLoading] = useState(false);
-    const { logout, loginAnonymously } = useUser();
+    const { logout } = useUser();
     const [input, setInput] = useState('');
     const [messages, setMessages] = useState<Message[]>([]);
     const loginUser = getAuth(app).currentUser;
 
-    // 匿名認証のユーザとログインユーザの違いはなんだろうか？
-    // メッセージ送信だけは、ルールをカスタマイズして認証していなくても誰でも送信できるようにしておく
-    // ただ、他の従業員がリンクにアクセスして勝手にメッセージを打てないように、お問い合わせの担当者が正しいかどうかのチェックはしておく
     let senderId = 'buyer';
     if (loginUser) {
         senderId = loginUser.uid;
@@ -40,17 +38,28 @@ const InquiryPage: NextPage<PageProps> = ({ inquiry }) => {
 
     const inquiryId = router.query.inquiry_id as string;
 
+    // これって初回しか実行されないけど、どうやって検知するの？
     useEffect(() => {
         if (isReady) {
             setIsLoading(true);
-            console.log('fetch messages', inquiryId);
-            firebaseApi.fetchMessages(inquiryId)
-                .then(messages => {
-                    setMessages(messages);
-                })
-                .catch(e => {
-                    console.error(e);
-                })
+            const colRef = collection(db, 'messages', inquiryId, 'inquiryMessages');
+            const sortConf = orderBy('createdAt', 'asc');
+            const q = query(colRef, sortConf);
+            onSnapshot(q, (qs) => {
+                const messages: Message[] = [];
+                qs.forEach(doc => {
+                    messages.push(doc.data() as Message);
+                    console.log(doc.data());
+                });
+                setMessages(messages);
+            });
+            // firebaseApi.fetchMessages(inquiryId)
+            //     .then(messages => {
+            //         console.log('hello');
+            //     })
+            //     .catch(e => {
+            //         console.error(e);
+            //     });
         }
     }, [isReady, inquiryId]);
 
@@ -58,30 +67,13 @@ const InquiryPage: NextPage<PageProps> = ({ inquiry }) => {
         return <div>loading..</div>;
     }
 
-
     console.log(loginUser);
-    // 認証してないなら、つまり購入者ならば匿名ログインさせておく
-    // if (!loginUser) {
-    //     (async function () {
-    //         // await loginAnonymously();
-    //         firebaseApi.fetchMessages(inquiryId)
-    //             .then(messages => {
-    //                 setMessages(messages);
-    //             })
-    //             .catch(e => {
-    //                 console.error(e);
-    //             });
-    //     })();
-    // }
-
-    // useEffect(() => {
-
-    // }, []);
 
     const send = async (): Promise<void> => {
         try {
-            await firebaseApi.addMessage(inquiryId as string, input, senderId);
-            setMessages([...messages, { inquiryId, message: input, from: senderId }]);
+            const createdAt = new Date().getTime();
+            await firebaseApi.addMessage(inquiryId as string, input, senderId, createdAt);
+            setMessages([...messages, { inquiryId, message: input, from: senderId, createdAt }]);
         } catch (e) {
             console.error(e);
         }
@@ -99,6 +91,7 @@ const InquiryPage: NextPage<PageProps> = ({ inquiry }) => {
                     <div key={idx} className={styles.message}>
                         <p>{message.message}</p>
                         <p>送信者:{message.from}</p>
+                        <p>日付:{new Date(message.createdAt).toString()}</p>
                     </div>
                 ))}
             </div>

@@ -1,7 +1,8 @@
 import path from 'path';
 import fs from 'fs';
-// import matter from 'matter';
 import matter from 'gray-matter';
+import { remark } from 'remark';
+import html from 'remark-html';
 
 const postsDir = path.join(process.cwd(), 'posts');
 
@@ -24,4 +25,38 @@ export const getPosts = (): Post[] => {
     });
 
     return allPosts;
+}
+
+type Params = {
+    id: string;
+}
+
+
+export const getAllPostIds = (): { params: Params }[] => {
+    const fileNames = fs.readdirSync(postsDir);
+    return fileNames.map(fileName => {
+        return {
+            params: {
+                id: fileName.replace(/\.md$/, '')
+            }
+        }
+    });
+}
+
+
+export const getPostById = async (id: string) => {
+    const fullPath = path.join(postsDir, `${id}.md`);
+    const fileContent = fs.readFileSync(fullPath, 'utf-8');
+    const matterRes = matter(fileContent);
+    const blogContent = await remark()
+        .use(html)
+        .process(matterRes.content);
+
+    const blogContentHTMl = blogContent.toString();
+
+    return {
+        id,
+        blogContentHTMl,
+        ...matterRes.data,
+    };
 }

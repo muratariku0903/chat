@@ -1,9 +1,8 @@
-import { signInAnonymously, getAuth } from "firebase/auth";
-import { doc, getDoc, setDoc, addDoc, collection, query, getDocs } from "firebase/firestore";
+import { doc, setDoc, addDoc, collection, getDocs, onSnapshot, query, Unsubscribe, orderBy, getDoc, FieldValue, Timestamp } from "firebase/firestore";
 import { Inquiry } from '../pages/contact';
 import { db } from "./db";
 
-// Add a new document in collection "cities"
+
 const addInquiry = async (id: string, input: Inquiry): Promise<void> => {
     try {
         const docRef = doc(db, 'inquiries', id);
@@ -27,10 +26,10 @@ const fetchInquiries = async (): Promise<Inquiry[]> => {
     return inquiries;
 }
 
-const addMessage = async (inquiryId: string, message: string, senderId: string): Promise<void> => {
+const addMessage = async (inquiryId: string, message: string, senderId: string, createdAt: number): Promise<void> => {
     try {
         const colRef = collection(db, 'messages', inquiryId, 'inquiryMessages');
-        await addDoc(colRef, { from: senderId, message, inquiryId });
+        await addDoc(colRef, { from: senderId, message, inquiryId, createdAt });
         console.log('add message to firestore.');
     } catch (e) {
         console.error(e);
@@ -41,19 +40,46 @@ export type Message = {
     inquiryId: string;
     message: string;
     from: string;
+    createdAt: number;
 }
 
 const fetchMessages = async (inquiryId: string): Promise<Message[]> => {
     const messages: Message[] = [];
     try {
-        const col = collection(db, 'messages', inquiryId, 'inquiryMessages');
-        (await getDocs(col)).docs.forEach(doc => {
-            messages.push(doc.data() as Message);
-        })
+        const colRef = collection(db, 'messages', inquiryId, 'inquiryMessages');
+        const sortConf = orderBy('createdAt', 'asc');
+        const q = query(colRef, sortConf);
+        onSnapshot(q, (qs) => {
+            const messages: Message[] = [];
+            qs.forEach(doc => {
+                messages.push(doc.data() as Message);
+                console.log(doc.data());
+            });
+            console.log(messages);
+            return messages;
+        });
+        // console.log(res);
+        // (await getDocs(q)).docs.forEach(doc => {
+        //     console.log(doc.data());
+        //     messages.push(doc.data() as Message);
+        // });
     } catch (e) {
         console.error(e);
+    } finally {
+        return messages;
     }
-    return messages;
 }
 
-export const firebaseApi = { addInquiry, fetchInquiries, addMessage, fetchMessages };
+const watch = async (inquiryId: string): Promise<Unsubscribe> => {
+    const colRef = collection(db, 'messages', inquiryId, 'inquiryMessages');
+    const q = query(colRef, orderBy('createdAt', 'asc'));
+    const res = onSnapshot(q, (qs) => {
+        qs.forEach(doc => {
+            console.log(doc);
+        });
+    });
+
+    return res;
+}
+
+export const firebaseApi = { addInquiry, fetchInquiries, addMessage, fetchMessages, watch };
