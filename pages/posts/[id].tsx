@@ -1,5 +1,5 @@
-import { NextPage, GetStaticPaths } from "next";
-import { getAllPostIds } from "../../lib/posts";
+import { NextPage, GetStaticPaths, GetStaticProps } from "next";
+import { getAllPostIds, getPostById, Post, } from "../../lib/posts";
 
 
 type PathParams = {
@@ -16,9 +16,27 @@ export const getStaticPaths: GetStaticPaths<PathParams> = async () => {
     }
 }
 
-const PostPage: NextPage = () => {
+type PostPageProps = {
+    post: Post;
+};
+
+export const getStaticProps: GetStaticProps<PostPageProps> = async context => {
+    const { id } = context.params as PathParams;
+    const post = await getPostById(id);
+
+    return {
+        props: {
+            post
+        }
+    }
+}
+
+const PostPage: NextPage<PostPageProps> = ({ post }) => {
     return (
-        <div>this is post detail page.</div>
+        <div>
+            <h1>this is post detail page.</h1>
+            <div>{post.title}</div>
+        </div>
     );
 }
 

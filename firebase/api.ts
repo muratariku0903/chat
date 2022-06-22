@@ -58,11 +58,6 @@ const fetchMessages = async (inquiryId: string): Promise<Message[]> => {
             console.log(messages);
             return messages;
         });
-        // console.log(res);
-        // (await getDocs(q)).docs.forEach(doc => {
-        //     console.log(doc.data());
-        //     messages.push(doc.data() as Message);
-        // });
     } catch (e) {
         console.error(e);
     } finally {
@@ -70,16 +65,4 @@ const fetchMessages = async (inquiryId: string): Promise<Message[]> => {
     }
 }
 
-const watch = async (inquiryId: string): Promise<Unsubscribe> => {
-    const colRef = collection(db, 'messages', inquiryId, 'inquiryMessages');
-    const q = query(colRef, orderBy('createdAt', 'asc'));
-    const res = onSnapshot(q, (qs) => {
-        qs.forEach(doc => {
-            console.log(doc);
-        });
-    });
-
-    return res;
-}
-
-export const firebaseApi = { addInquiry, fetchInquiries, addMessage, fetchMessages, watch };
+export const firebaseApi = { addInquiry, fetchInquiries, addMessage, fetchMessages };

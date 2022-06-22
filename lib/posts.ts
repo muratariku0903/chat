@@ -27,6 +27,7 @@ export const getPosts = (): Post[] => {
     return allPosts;
 }
 
+
 type Params = {
     id: string;
 }
@@ -43,20 +44,27 @@ export const getAllPostIds = (): { params: Params }[] => {
     });
 }
 
+export type PostHTML = {
+    id: string;
+    blogContentHTMl: string;
+};
 
-export const getPostById = async (id: string) => {
+
+export const getPostById = (id: string): Post => {
     const fullPath = path.join(postsDir, `${id}.md`);
     const fileContent = fs.readFileSync(fullPath, 'utf-8');
     const matterRes = matter(fileContent);
-    const blogContent = await remark()
-        .use(html)
-        .process(matterRes.content);
 
-    const blogContentHTMl = blogContent.toString();
+    return { id, ...matterRes.data as Omit<Post, 'id'> };
+    // const blogContent = await remark()
+    //     .use(html)
+    //     .process(matterRes.content);
 
-    return {
-        id,
-        blogContentHTMl,
-        ...matterRes.data,
-    };
+    // const blogContentHTMl = blogContent.toString();
+
+    // return {
+    //     id,
+    //     blogContentHTMl,
+    //     ...matterRes.data,
+    // };
 }
