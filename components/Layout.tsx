@@ -1,9 +1,49 @@
-import React, { Fragment, ReactElement } from 'react';
+import React, { Fragment, ReactElement, useEffect, useState } from 'react';
 import Head from 'next/head';
+import { useRouter } from 'next/router';
+import { useDispatch, useSelector } from 'react-redux';
+import { inquiriesSlicer } from '../store/Inquiries';
+import { firebaseApi } from '../firebase/api';
+import { Inquiry } from '../pages/contact';
+import { RootState } from '../store/index';
+
 
 type LayoutProps = Required<{ readonly children: ReactElement }>;
 
 const Layout = ({ children }: LayoutProps) => {
+    const [isLoading, setIsLoading] = useState(false);
+    const dispatch = useDispatch();
+    const router = useRouter();
+    const isReady = router.isReady;
+    const isLogin = useSelector((state: RootState) => state.user.isLogin);
+
+    // 初期設定
+    useEffect(() => {
+        console.log('setup');
+        firebaseApi.fetchInquiries().then(res => {
+            dispatch(inquiriesSlicer.actions.setInquiries(res));
+        }).catch(e => {
+            console.error(e);
+        })
+    }, []);
+
+    // ページごとに決まった処理
+    useEffect(() => {
+        console.log('router');
+        if (router.pathname === '/login' || router.pathname === '/inquiries') return;
+        if (!isLogin) router.push('/login');
+    }, [router.pathname]);
+
+    // routerのセットアップ
+    useEffect(() => {
+        if (isReady) setIsLoading(true);
+    }, [isReady, router.pathname]);
+
+
+    if (!isLoading) {
+        return <div>loading..</div>;
+    }
+
     return (
         <Fragment>
             <Head>

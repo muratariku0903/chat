@@ -24,12 +24,14 @@ type PageProps = {
 // messages uid(query)  messageId field
 const InquiryPage: NextPage<PageProps> = ({ inquiry }) => {
     const router = useRouter();
+    const inquiries = useSelector((state: RootState) => state.inquiries.inquiries);
     const isReady = router.isReady;
     const [isLoading, setIsLoading] = useState(false);
     const { logout } = useUser();
     const [input, setInput] = useState('');
     const [messages, setMessages] = useState<Message[]>([]);
     const loginUser = getAuth(app).currentUser;
+
 
     let senderId = 'buyer';
     if (loginUser) {
@@ -49,17 +51,9 @@ const InquiryPage: NextPage<PageProps> = ({ inquiry }) => {
                 const messages: Message[] = [];
                 qs.forEach(doc => {
                     messages.push(doc.data() as Message);
-                    console.log(doc.data());
                 });
                 setMessages(messages);
             });
-            // firebaseApi.fetchMessages(inquiryId)
-            //     .then(messages => {
-            //         console.log('hello');
-            //     })
-            //     .catch(e => {
-            //         console.error(e);
-            //     });
         }
     }, [isReady, inquiryId]);
 

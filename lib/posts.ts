@@ -56,15 +56,4 @@ export const getPostById = (id: string): Post => {
     const matterRes = matter(fileContent);
 
     return { id, ...matterRes.data as Omit<Post, 'id'> };
-    // const blogContent = await remark()
-    //     .use(html)
-    //     .process(matterRes.content);
-
-    // const blogContentHTMl = blogContent.toString();
-
-    // return {
-    //     id,
-    //     blogContentHTMl,
-    //     ...matterRes.data,
-    // };
 }

@@ -2,6 +2,7 @@ import { configureStore, getDefaultMiddleware, combineReducers, EnhancedStore } 
 import { persistReducer, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from 'redux-persist'
 import createWebStorage from 'redux-persist/lib/storage/createWebStorage'
 import { userSlice } from './user';
+import { inquiriesSlicer } from './Inquiries';
 
 const createNoopStorage = () => {
     return {
@@ -20,7 +21,8 @@ const storage = typeof window !== 'undefined' ? createWebStorage('local') : crea
 
 const rootReducer = combineReducers({
     user: userSlice.reducer,
-})
+    inquiries: inquiriesSlicer.reducer,
+});
 
 export type RootState = ReturnType<typeof rootReducer>;
 

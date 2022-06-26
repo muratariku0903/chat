@@ -45,7 +45,7 @@ const Home: NextPage<HomePageProps> = ({ }) => {
         return <div>loading..</div>;
     }
 
-    if (!isLogin) router.push('/login');
+    // if (!isLogin) router.push('/login');
 
     return (
         <div>
