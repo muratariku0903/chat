@@ -1,17 +1,17 @@
-import { NextPage } from "next";
+import { NextPageWithLayout } from "next";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import { RootState } from "../../store";
 import { firebaseApi } from "../../firebase/api";
+import { getAuth } from "firebase/auth";
 import { app } from "../../firebase/db";
 import { Inquiry } from "../contact";
 import styles from '../../styles/Inquiry.module.css';
-import { getAuth } from "firebase/auth";
 import { Message } from '../../firebase/api';
 import { useUser } from "../../hooks/user";
 import { db } from "../../firebase/db";
-import { serverTimestamp, Timestamp, FieldValue, collection, query, orderBy, onSnapshot } from "firebase/firestore";
+import { collection, query, orderBy, onSnapshot } from "firebase/firestore";
+import BuyerLayout from "../../components/layout/buyer";
+import BaseLayout from "../../components/layout/base";
 
 type PageProps = {
     inquiry: Inquiry;
@@ -22,16 +22,14 @@ type PageProps = {
 // あるいは、毎回、データをポストするごとに匿名ログインさせるか
 // queryをもとに、チャットを取得する
 // messages uid(query)  messageId field
-const InquiryPage: NextPage<PageProps> = ({ inquiry }) => {
+const InquiryPage: NextPageWithLayout<PageProps> = ({ inquiry }) => {
     const router = useRouter();
-    const inquiries = useSelector((state: RootState) => state.inquiries.inquiries);
     const isReady = router.isReady;
     const [isLoading, setIsLoading] = useState(false);
     const { logout } = useUser();
     const [input, setInput] = useState('');
     const [messages, setMessages] = useState<Message[]>([]);
     const loginUser = getAuth(app).currentUser;
-
 
     let senderId = 'buyer';
     if (loginUser) {
@@ -40,7 +38,6 @@ const InquiryPage: NextPage<PageProps> = ({ inquiry }) => {
 
     const inquiryId = router.query.inquiry_id as string;
 
-    // これって初回しか実行されないけど、どうやって検知するの？
     useEffect(() => {
         if (isReady) {
             setIsLoading(true);
@@ -57,9 +54,7 @@ const InquiryPage: NextPage<PageProps> = ({ inquiry }) => {
         }
     }, [isReady, inquiryId]);
 
-    if (!isLoading) {
-        return <div>loading..</div>;
-    }
+    if (!isLoading) return <div>loading..</div>;
 
     console.log(loginUser);
 
@@ -91,9 +86,14 @@ const InquiryPage: NextPage<PageProps> = ({ inquiry }) => {
             </div>
             <div style={{ marginTop: '20px' }}>
                 <button onClick={logout}>logout</button>
+                <button onClick={() => router.push('/')}>top</button>
             </div>
         </div >
     );
 }
+
+const isStaff = getAuth().currentUser && !getAuth().currentUser?.isAnonymous;
+console.log(isStaff);
+InquiryPage.getLayout = (page) => isStaff ? <BaseLayout>{page}</BaseLayout> : <BuyerLayout>{page}</BuyerLayout>;
 
 export default InquiryPage;

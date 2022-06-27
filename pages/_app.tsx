@@ -1,18 +1,17 @@
-import type { AppProps } from 'next/app';
+import { NextPage } from 'next';
+import type { AppProps, AppPropsWithLayout } from 'next/app';
+import { ReactElement } from 'react';
 import { Provider } from 'react-redux';
 import store from '../store';
 import Layout from '../components/Layout';
 import '../styles/globals.css';
 
-function MyApp({ Component, pageProps }: AppProps) {
 
-    return (
-        <Provider store={store}>
-            <Layout>
-                <Component {...pageProps} />
-            </Layout>
-        </Provider>
-    );
+// MyAppというのは各コンポーネントの雛形のようなもの
+function MyApp({ Component, pageProps }: AppPropsWithLayout) {
+    const getLayout = Component.getLayout ?? ((page: ReactElement) => page);
+
+    return getLayout(<Component {...pageProps} />);
 }
 
 export default MyApp;

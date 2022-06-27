@@ -1,8 +1,10 @@
-import { NextPage } from "next";
+import { NextPageWithLayout } from "next";
+import { Router, useRouter } from "next/router";
 import { useState } from "react";
 import { signInAnonymously, getAuth } from "firebase/auth";
 import { app } from '../firebase/db';
 import { firebaseApi } from "../firebase/api";
+import BuyerLayout from "../components/layout/buyer";
 
 
 export type Inquiry = {
@@ -20,8 +22,9 @@ const initialInput: Inquiry = {
 }
 
 
-const ContactPage: NextPage = () => {
+const ContactPage: NextPageWithLayout = () => {
     const [input, setInput] = useState<Inquiry>(initialInput);
+    const router = useRouter();
 
     const postInquiry = async (input: Inquiry): Promise<void> => {
         const auth = getAuth(app);
@@ -49,8 +52,11 @@ const ContactPage: NextPage = () => {
                 <textarea value={input.content} onChange={(e) => setInput({ ...input, content: e.target.value })}></textarea>
             </form>
             <button onClick={() => postInquiry(input)}>send</button>
+            <button onClick={() => router.push('/')}>top</button>
         </div>
     );
 }
+
+ContactPage.getLayout = (page) => <BuyerLayout>{page}</BuyerLayout>
 
 export default ContactPage;

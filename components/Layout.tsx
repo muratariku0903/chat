@@ -1,5 +1,7 @@
 import React, { Fragment, ReactElement, useEffect, useState } from 'react';
 import Head from 'next/head';
+import { Provider } from 'react-redux';
+import store from '../store/index';
 import { useRouter } from 'next/router';
 import { useDispatch, useSelector } from 'react-redux';
 import { inquiriesSlicer } from '../store/Inquiries';
@@ -19,7 +21,7 @@ const Layout = ({ children }: LayoutProps) => {
 
     // 初期設定
     useEffect(() => {
-        console.log('setup');
+        console.log('setup process');
         firebaseApi.fetchInquiries().then(res => {
             dispatch(inquiriesSlicer.actions.setInquiries(res));
         }).catch(e => {
@@ -29,13 +31,14 @@ const Layout = ({ children }: LayoutProps) => {
 
     // ページごとに決まった処理
     useEffect(() => {
-        console.log('router');
-        if (router.pathname === '/login' || router.pathname === '/inquiries') return;
+        console.log('routing process');
+        if (router.pathname === '/login' || router.pathname === '/inquiries' || router.pathname === '/contact') return;
         if (!isLogin) router.push('/login');
     }, [router.pathname]);
 
     // routerのセットアップ
     useEffect(() => {
+        console.log('setup router');
         if (isReady) setIsLoading(true);
     }, [isReady, router.pathname]);
 

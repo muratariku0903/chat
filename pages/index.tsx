@@ -1,13 +1,10 @@
 import { useEffect, useState } from 'react';
-import type { NextPage } from 'next';
+import type { NextPageWithLayout } from 'next';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
-import { getPosts, Post } from '../lib/posts';
 import { firebaseApi } from '../firebase/api';
 import { Inquiry } from './contact';
 import styles from '../styles/Home.module.css';
-import { useSelector } from 'react-redux';
-import { RootState } from '../store';
+import BaseLayout from '../components/layout/base';
 
 // case SSG ビルド時に一回だけデータを取得したい
 // export const getServerSideProps = async () => {
@@ -23,29 +20,14 @@ type HomePageProps = {
     inquiries: Inquiry[];
 }
 
-const Home: NextPage<HomePageProps> = ({ }) => {
-    const router = useRouter();
+
+// このページってSSGなのかな？あるいはSSRなのかな？
+// NextPageWithLayoutという型を指定することでこのページコンポーネントが「getLayout」というメソッドを持つことができる
+const Home: NextPageWithLayout<HomePageProps> = ({ }) => {
     const [inquiries, setInquiries] = useState<Inquiry[]>([]);
-    const [isLoading, setIsLoading] = useState(false);
-    const isLogin = useSelector((state: RootState) => state.user.isLogin);
-    const isReady = router.isReady;
     useEffect(() => {
-        firebaseApi.fetchInquiries().then(res => {
-            setInquiries(res);
-        });
+        firebaseApi.fetchInquiries().then(res => { setInquiries(res) });
     }, []);
-
-    useEffect(() => {
-        if (isReady) {
-            setIsLoading(true);
-        }
-    }, [isReady]);
-
-    if (!isLoading) {
-        return <div>loading..</div>;
-    }
-
-    // if (!isLogin) router.push('/login');
 
     return (
         <div>
@@ -62,5 +44,8 @@ const Home: NextPage<HomePageProps> = ({ }) => {
         </div>
     )
 }
+
+// 上記で定義したコンポーネントをどのレイアウトでラップするかを決める
+Home.getLayout = (page) => <BaseLayout>{page}</BaseLayout>;
 
 export default Home;
