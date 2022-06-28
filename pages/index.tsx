@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react';
 import type { NextPageWithLayout } from 'next';
 import Link from 'next/link';
-import { firebaseApi } from '../firebase/api';
-import { Inquiry } from './contact';
+import { firebaseApi } from '../repositories/firebase/api';
 import styles from '../styles/Home.module.css';
 import BaseLayout from '../components/layout/base';
 
@@ -20,10 +19,9 @@ type HomePageProps = {
     inquiries: Inquiry[];
 }
 
-
 // このページってSSGなのかな？あるいはSSRなのかな？
 // NextPageWithLayoutという型を指定することでこのページコンポーネントが「getLayout」というメソッドを持つことができる
-const Home: NextPageWithLayout<HomePageProps> = ({ }) => {
+const HomePage: NextPageWithLayout<HomePageProps> = ({ }) => {
     const [inquiries, setInquiries] = useState<Inquiry[]>([]);
     useEffect(() => {
         firebaseApi.fetchInquiries().then(res => { setInquiries(res) });
@@ -46,6 +44,6 @@ const Home: NextPageWithLayout<HomePageProps> = ({ }) => {
 }
 
 // 上記で定義したコンポーネントをどのレイアウトでラップするかを決める
-Home.getLayout = (page) => <BaseLayout>{page}</BaseLayout>;
+HomePage.getLayout = (page) => <BaseLayout>{page}</BaseLayout>;
 
-export default Home;
+export default HomePage;

@@ -1,14 +1,14 @@
 import { NextPageWithLayout } from "next";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { firebaseApi } from "../../firebase/api";
+import { firebaseApi } from "../../repositories/firebase/api";
 import { getAuth } from "firebase/auth";
-import { app } from "../../firebase/db";
+import { app } from "../../repositories/firebase/db";
 import { Inquiry } from "../contact";
 import styles from '../../styles/Inquiry.module.css';
-import { Message } from '../../firebase/api';
+import { Message } from '../../repositories/firebase/api';
 import { useUser } from "../../hooks/user";
-import { db } from "../../firebase/db";
+import { db } from "../../repositories/firebase/db";
 import { collection, query, orderBy, onSnapshot } from "firebase/firestore";
 import BuyerLayout from "../../components/layout/buyer";
 import BaseLayout from "../../components/layout/base";

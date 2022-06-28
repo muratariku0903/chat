@@ -1,7 +1,7 @@
 import { getAuth, signInWithEmailAndPassword, signOut, signInAnonymously } from 'firebase/auth';
 import { useDispatch } from 'react-redux';
 import { userSlice } from '../store/user';
-import { db, app } from '../firebase/db';
+import { db, app } from '../repositories/firebase/db';
 
 
 type LoginForm = {
