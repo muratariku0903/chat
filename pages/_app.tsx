@@ -1,8 +1,5 @@
-import { NextPage } from 'next';
-import type { AppProps, AppPropsWithLayout } from 'next/app';
+import type { AppPropsWithLayout } from 'next/app';
 import { ReactElement } from 'react';
-import { Provider } from 'react-redux';
-import store from '../store';
 import '../styles/globals.css';
 
 

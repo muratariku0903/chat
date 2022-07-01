@@ -1,9 +1,12 @@
 import { useEffect, useState } from 'react';
 import type { NextPageWithLayout } from 'next';
-import Link from 'next/link';
-import { firebaseApi } from '../repositories/firebase/api';
-import styles from '../styles/Home.module.css';
+import { Box } from '@mui/material';
+import { styled } from '@mui/material/styles';
+import type { Inquiry } from '../repositories/firebase/types/inquiry';
 import BaseLayout from '../components/layout/base';
+import Navigation from '../components/base/Navigation/Navigation';
+import Inquiries from '../components/pages/inquiries';
+import Drawer from '../components/base/Drawer/Drawer';
 
 // case SSG ビルド時に一回だけデータを取得したい
 // export const getServerSideProps = async () => {
@@ -15,6 +18,10 @@ import BaseLayout from '../components/layout/base';
 //     }
 // }
 
+const InquiriesWrapper = styled(Box)({
+    margin: '10% auto'
+});
+
 type HomePageProps = {
     inquiries: Inquiry[];
 }
@@ -23,23 +30,19 @@ type HomePageProps = {
 // NextPageWithLayoutという型を指定することでこのページコンポーネントが「getLayout」というメソッドを持つことができる
 const HomePage: NextPageWithLayout<HomePageProps> = ({ }) => {
     const [inquiries, setInquiries] = useState<Inquiry[]>([]);
-    useEffect(() => {
-        firebaseApi.fetchInquiries().then(res => { setInquiries(res) });
-    }, []);
 
     return (
-        <div>
-            {inquiries.map((inquiry, idx) => (
-                <article key={idx} className={styles.article}>
-                    <h2>{inquiry.title}</h2>
-                    <Link href={`/inquiries/${inquiry.id}`}>
-                        <a href={`/inquiries/${inquiry.id}`}>リンク</a>
-                    </Link>
-                    <p>{inquiry.name}</p>
-                </article>
-            ))}
-            <button><Link href='./contact'>contact</Link></button>
-        </div>
+        <Box>
+            <Navigation />
+            <Box style={{ display: 'flex' }}>
+                <InquiriesWrapper>
+                    <Inquiries />
+                </InquiriesWrapper>
+                <Box>
+                    <Drawer />
+                </Box>
+            </Box>
+        </Box>
     )
 }
 
