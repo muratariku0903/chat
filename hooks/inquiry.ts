@@ -17,15 +17,9 @@ export const useInquiry = () => {
         }
     }
 
-    const addInquiry = async (form: Omit<Inquiry, 'statusTypeId' | 'staffId' | 'createdAt'>): Promise<void> => {
+    const addInquiry = async (form: Omit<Inquiry, 'id' | 'statusTypeId' | 'staffId' | 'createdAt'>): Promise<void> => {
         try {
-            const inquiry: Inquiry = {
-                ...form,
-                statusTypeId: 'i9NH34FZeSEZDW2fNoWw',
-                staffId: '',
-                createdAt: new Date().getTime(),
-            }
-            await inquiriesApi.addInquiry(inquiry);
+            await inquiriesApi.addInquiry(form);
             console.log('add inquiry');
         } catch (e) {
             console.error(e);

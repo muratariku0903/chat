@@ -1,4 +1,4 @@
-import { getDocs, addDoc, collection, where, query, orderBy, limit } from "firebase/firestore";
+import { getDocs, addDoc, setDoc, collection, doc, where, query, orderBy, limit } from "firebase/firestore";
 import { Inquiry } from "../types/inquiry";
 import { QueryClauses } from "../types/clause";
 import { db } from "../db";
@@ -41,10 +41,19 @@ const fetchAllInquiries = async (): Promise<Inquiry[]> => {
     }
 }
 
-const addInquiry = async (inquiry: Inquiry): Promise<void> => {
+const addInquiry = async (form: Omit<Inquiry, 'id' | 'statusTypeId' | 'staffId' | 'createdAt'>): Promise<void> => {
     try {
         const colRef = createColRef();
-        await addDoc(colRef, inquiry);
+        const docRef = doc(colRef);
+        const id = docRef.id;
+        const inquiry: Inquiry = {
+            id,
+            ...form,
+            statusTypeId: 'i9NH34FZeSEZDW2fNoWw',
+            staffId: '',
+            createdAt: new Date().getTime(),
+        }
+        await setDoc(docRef, inquiry);
     } catch (e) {
         throw (`Fail adding inquiry to firestore because: ${e}`);
     }

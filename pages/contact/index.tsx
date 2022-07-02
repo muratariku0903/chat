@@ -20,7 +20,7 @@ const ContactPage: NextPage<ContactPageProps> = ({ }) => {
     const [tel, setTel] = useState('');
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
-    const [productTypeId, setProductTypeId] = useState('');
+    const [productTypeId, setProductTypeId] = useState('dm129qbM9QYUEo3yQ6kv');
     const { addInquiry } = useInquiry();
 
     const send = async () => {

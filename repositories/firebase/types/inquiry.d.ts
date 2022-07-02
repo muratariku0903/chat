@@ -1,4 +1,5 @@
 export type Inquiry = {
+    id: string;
     customerName: string;
     customerEmail: string;
     customerTel: string;
