@@ -11,6 +11,10 @@ const pages = [
     {
         path: '/inquiries',
         name: 'Inquiries',
+    },
+    {
+        path: '/contact',
+        name: 'Contact',
     }
 ];
 
