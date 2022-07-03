@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import { NextPage } from "next";
+import { NextPageWithLayout } from "next";
 import { styled } from '@mui/material/styles';
+import BaseLayout from "../../components/layout/base";
 import { useInquiry } from "../../hooks/inquiry";
 
 const FormWrapper = styled('div')({
@@ -14,7 +15,7 @@ const Button = styled('button')({
 
 type ContactPageProps = {};
 
-const ContactPage: NextPage<ContactPageProps> = ({ }) => {
+const ContactPage: NextPageWithLayout<ContactPageProps> = ({ }) => {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [tel, setTel] = useState('');
@@ -54,5 +55,7 @@ const ContactPage: NextPage<ContactPageProps> = ({ }) => {
         </FormWrapper>
     );
 }
+
+ContactPage.getLayout = (page) => <BaseLayout>{page}</BaseLayout>;
 
 export default ContactPage;

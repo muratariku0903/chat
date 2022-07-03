@@ -1,22 +1,18 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { Inquiry } from "../../repositories/firebase/types/inquiry";
 
-export type Inquiry = {
-    id: string;
-    title: string;
-    content: string;
-}
 
 type InquiriesState = {
     inquiries: Inquiry[];
 }
 
 const initialState: InquiriesState = {
-    inquiries: []
+    inquiries: [],
 };
 
 type SetInquiriesPayload = Inquiry[];
 
-export const inquiriesSlicer = createSlice({
+export const inquiriesSlice = createSlice({
     name: 'inquiries',
     initialState,
     reducers: {

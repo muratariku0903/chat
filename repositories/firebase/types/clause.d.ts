@@ -19,5 +19,5 @@ export type LimitClause = {
 export type QueryClauses = {
     whereClauses: WhereClause[];
     orderByClauses: OrderByClause[];
-    limitClause: LimitClause;
+    limitClause: LimitClause | null;
 }

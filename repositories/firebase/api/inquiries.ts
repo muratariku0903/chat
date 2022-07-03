@@ -1,4 +1,4 @@
-import { getDocs, addDoc, setDoc, collection, doc, where, query, orderBy, limit } from "firebase/firestore";
+import { getDocs, setDoc, collection, doc, where, query, orderBy, limit } from "firebase/firestore";
 import { Inquiry } from "../types/inquiry";
 import { QueryClauses } from "../types/clause";
 import { db } from "../db";

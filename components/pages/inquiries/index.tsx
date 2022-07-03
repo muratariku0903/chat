@@ -1,38 +1,43 @@
 import React, { useEffect, useState } from "react";
-import { Inquiry } from "../../../repositories/firebase/types/inquiry";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../store";
 import { QueryClauses } from "../../../repositories/firebase/types/clause";
 import { useInquiry } from "../../../hooks/inquiry";
 import InquiryTable from "../../base/Inquiry/InquiryTable/InquiryTable";
+import Pagination from '../../base/Pagination/Pagination';
 
 
 const Inquiries: React.FC = () => {
-    const [inquiries, setInquiries] = useState<Inquiry[]>([]);
+    const inquiries = useSelector((state: RootState) => state.inquiries.inquiries);
     const { fetchInquiries } = useInquiry();
 
+    // whereでマッチするレコードを全て取得してページ分割はtableに任せるか
     useEffect(() => {
         const queryClauses: QueryClauses = {
             whereClauses: [
                 // {
                 //     fieldName: 'statusTypeId',
                 //     operator: 'in',
-                //     fieldValue: ['K9enOmGKuEPkLwYKoD78', 'i9NH34FZeSEZDW2fNoWw']
-                // }
-            ],
-            orderByClauses: [
+                //     fieldValue: ['K9enOmGKuEPkLwYKoD78', 'i9NH34FZeSEZDW2fNoWw', 'zjTUpxOwRBUCI076GRKE']
+                // },
                 {
-                    fieldName: 'statusTypeId',
-                    direValue: 'asc',
+                    fieldName: 'staffId',
+                    operator: '==',
+                    fieldValue: 'rb1ZALaJEpvzPLuH1R27',
                 }
             ],
-            limitClause: {
-                limitCnt: 5
-            }
+            orderByClauses: [
+                // {
+                //     fieldName: 'statusTypeId',
+                //     direValue: 'asc',
+                // }
+            ],
+            limitClause: null,
         }
 
         fetchInquiries(queryClauses)
-            .then(res => {
-                setInquiries(res);
-                console.log(res);
+            .then(inquiries => {
+                console.log(inquiries);
             }).catch(e => {
                 console.error(e);
             });
