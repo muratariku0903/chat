@@ -5,7 +5,7 @@ import { RootState } from '../../../../store';
 import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Paper, TablePagination } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { Inquiry } from '../../../../repositories/firebase/types/inquiry';
-import { roundStr, isEmptyObj } from '../../../../utils';
+import { roundStr, isEmptyObj, formatDate } from '../../../../utils';
 
 
 const InquiryTableRow = styled(TableRow)({
@@ -75,7 +75,7 @@ const InquiryTable: React.FC<InquiryTableProps> = ({ inquiries }) => {
                                 <TableCell>{productTypes[inquiry.productTypeId].name}</TableCell>
                                 <TableCell>{statusTypes[inquiry.statusTypeId].name}</TableCell>
                                 <TableCell>{roundStr(inquiry.content)}</TableCell>
-                                <TableCell>{new Date(inquiry.createdAt).toDateString()}</TableCell>
+                                <TableCell>{formatDate(new Date(inquiry.createdAt))}</TableCell>
                             </InquiryTableRow>
                         ))}
                     </TableBody>

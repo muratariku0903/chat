@@ -6,7 +6,7 @@ export type Inquiry = {
     title: string;
     content: string;
     productTypeId: string;
-    statusTypeId: string;
+    statusTypeId: number;
     staffId: string;
     createdAt: number;
 }

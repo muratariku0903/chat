@@ -1,4 +1,4 @@
-import { getDocs, setDoc, collection, doc, where, query, orderBy, limit } from "firebase/firestore";
+import { getDoc, getDocs, setDoc, collection, doc, where, query, orderBy, limit, startAt } from "firebase/firestore";
 import { Inquiry } from "../types/inquiry";
 import { QueryClauses } from "../types/clause";
 import { db } from "../db";
@@ -11,12 +11,32 @@ const fetchInquiries = async (queryClauses: QueryClauses): Promise<Inquiry[]> =>
     try {
         const colRef = createColRef();
         const clauses = createClauses(queryClauses);
-        console.log(clauses);
-        const q = query(colRef, ...clauses);
+        // const q = query(colRef, ...clauses);
+        const docRef = doc(colRef);
+        const docSnapshot = await getDoc(docRef);
+        console.log(docSnapshot);
+
+        // 最後に取得してきたレコードの時間をstartAtにして仕舞えばいいのでは？
+        // 未着手を100として、対応中を２００にする、そして、対応ずみを３００にする
+        // 未着手だけがほしい
+        // where('statusTypeId', '<=', 100),
+        // 未着手と対応中だけがほしい
+        // where('statusTypeId', '<=', 200),
+        // 未着手と対応中と対応済みだけがほしい
+        // where('statusTypeId', '<=', 300),
+        // 未着手と対応済みだけがほしい
+        // where('statusTypeId', '<=', 100), where('statusTypeId', '>=', 300),
+        const q = query(colRef,
+            where('statusTypeId', '<=', 200),
+            // orderBy('createdAt'),
+            // limit(5)
+        );
+
         (await getDocs(q)).docs.forEach(doc => {
             const inquiry = doc.data() as Inquiry;
             inquiries.push(inquiry);
         });
+        console.log(inquiries);
         console.log('Fetching inquiries from firestore.');
     } catch (e) {
         throw (`Fail fetching inquiries form firestore because: ${e}`);
@@ -49,7 +69,7 @@ const addInquiry = async (form: Omit<Inquiry, 'id' | 'statusTypeId' | 'staffId' 
         const inquiry: Inquiry = {
             id,
             ...form,
-            statusTypeId: 'i9NH34FZeSEZDW2fNoWw',
+            statusTypeId: 100,
             staffId: '',
             createdAt: new Date().getTime(),
         }

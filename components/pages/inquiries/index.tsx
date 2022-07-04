@@ -4,7 +4,6 @@ import { RootState } from "../../../store";
 import { QueryClauses } from "../../../repositories/firebase/types/clause";
 import { useInquiry } from "../../../hooks/inquiry";
 import InquiryTable from "../../base/Inquiry/InquiryTable/InquiryTable";
-import Pagination from '../../base/Pagination/Pagination';
 
 
 const Inquiries: React.FC = () => {
