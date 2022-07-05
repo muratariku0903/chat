@@ -14,11 +14,11 @@ const Inquiries: React.FC = () => {
     useEffect(() => {
         const queryClauses: QueryClauses = {
             whereClauses: [
-                // {
-                //     fieldName: 'statusTypeId',
-                //     operator: 'in',
-                //     fieldValue: ['K9enOmGKuEPkLwYKoD78', 'i9NH34FZeSEZDW2fNoWw', 'zjTUpxOwRBUCI076GRKE']
-                // },
+                {
+                    fieldName: 'statusTypeId',
+                    operator: 'in',
+                    fieldValue: ['K9enOmGKuEPkLwYKoD78', 'i9NH34FZeSEZDW2fNoWw', 'zjTUpxOwRBUCI076GRKE']
+                },
                 {
                     fieldName: 'staffId',
                     operator: '==',
@@ -26,10 +26,10 @@ const Inquiries: React.FC = () => {
                 }
             ],
             orderByClauses: [
-                // {
-                //     fieldName: 'statusTypeId',
-                //     direValue: 'asc',
-                // }
+                {
+                    fieldName: 'statusTypeId',
+                    direValue: 'asc',
+                }
             ],
             limitClause: null,
         }

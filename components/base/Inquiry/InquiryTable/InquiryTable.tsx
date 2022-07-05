@@ -20,13 +20,11 @@ type OutterProps = {
 type InquiryTableProps = OutterProps;
 
 const InquiryTable: React.FC<InquiryTableProps> = ({ inquiries }) => {
-    // ここで、firestoreだとソートされないから、ここでステータスのソートをする。ただ、パフォーマンス的にあまり良くない。
-
     const router = useRouter();
     const statusTypes = useSelector((state: RootState) => state.statusTypes.statusTypes);
     const productTypes = useSelector((state: RootState) => state.productTypes.productTypes);
     const [page, setPage] = useState(0);
-    const [rowsPerPage, setRowsPerPage] = useState(5);
+    const [rowsPerPage, setRowsPerPage] = useState(10);
 
     const handleChangePage = (event: unknown, newPage: number) => {
         setPage(newPage);
@@ -45,7 +43,7 @@ const InquiryTable: React.FC<InquiryTableProps> = ({ inquiries }) => {
         });
     }
 
-    if (isEmptyObj(statusTypes) || isEmptyObj(productTypes)) return <div>loading...</div>;
+    if (isEmptyObj(statusTypes) || isEmptyObj(productTypes)) return <p>loading...</p>;
 
     return (
         <Fragment>
