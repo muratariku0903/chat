@@ -2,9 +2,14 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../store";
 import { QueryClauses } from "../../../repositories/firebase/types/clause";
+import { Inquiry } from "../../../repositories/firebase/types/inquiry";
 import { useInquiry } from "../../../hooks/inquiry";
 import InquiryTable from "../../base/Inquiry/InquiryTable/InquiryTable";
 
+
+type OutterProps = {
+    inquiries: Inquiry[];
+}
 
 const Inquiries: React.FC = () => {
     const inquiries = useSelector((state: RootState) => state.inquiries.inquiries);

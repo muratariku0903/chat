@@ -43,7 +43,7 @@ const InquiryTable: React.FC<InquiryTableProps> = ({ inquiries }) => {
         });
     }
 
-    if (isEmptyObj(statusTypes) || isEmptyObj(productTypes)) return <p>loading...</p>;
+    if (isEmptyObj(statusTypes) || isEmptyObj(productTypes)) return <div>loading...</div>;
 
     return (
         <Fragment>

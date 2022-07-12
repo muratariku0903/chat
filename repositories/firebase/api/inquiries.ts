@@ -6,12 +6,12 @@ import { db } from "../db";
 const rootCollection = 'inquiries';
 
 
-const fetchInquiries = async (queryClauses: QueryClauses): Promise<Inquiry[]> => {
+const fetchInquiries = async (queryClauses?: QueryClauses): Promise<Inquiry[]> => {
     const inquiries: Inquiry[] = [];
     try {
         const colRef = createColRef();
-        const clauses = createClauses(queryClauses);
-        // const q = query(colRef, ...clauses);
+        const clauses = queryClauses ? createClauses(queryClauses) : [];
+        const q = query(colRef, ...clauses);
 
         // 最後に取得してきたレコードの時間をstartAtにして仕舞えばいいのでは？
         // 未着手を100として、対応中を２００にする、そして、対応ずみを３００にする
@@ -28,19 +28,19 @@ const fetchInquiries = async (queryClauses: QueryClauses): Promise<Inquiry[]> =>
         const statusQuery = query(colRef, where('statusTypeId', '<=', 200), orderBy('statusTypeId'));
         const sortQuery = query(colRef, orderBy('createdAt'));
 
-        const q = query(colRef,
-            where('statusTypeId', '==', 200),
-            // orderBy('statusTypeId'),
-            orderBy('createdAt'),
-            // where('createdAt', '>', 1),
-            // limit(5)
-        );
+        // const q = query(colRef,
+        //     where('statusTypeId', '==', 200),
+        //     // orderBy('statusTypeId'),
+        //     orderBy('createdAt'),
+        //     // where('createdAt', '>', 1),
+        //     // limit(5)
+        // );
 
-        await getDocs(q).then(res => {
-            console.log(res);
-        }).catch(e => {
-            console.log(e);
-        });
+        // await getDocs(q).then(res => {
+        //     console.log(res);
+        // }).catch(e => {
+        //     console.log(e);
+        // });
 
         // console.log(querySnapshot);
 
@@ -48,7 +48,6 @@ const fetchInquiries = async (queryClauses: QueryClauses): Promise<Inquiry[]> =>
             const inquiry = doc.data() as Inquiry;
             inquiries.push(inquiry);
         });
-        // console.log(inquiries);
         console.log('Fetching inquiries from firestore.');
     } catch (e) {
         throw (`Fail fetching inquiries form firestore because: ${e}`);

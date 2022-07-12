@@ -39,17 +39,29 @@ const ContactPage: NextPageWithLayout<ContactPageProps> = ({ }) => {
         <FormWrapper>
             <h2>お問い合わせフォーム</h2>
             <form>
-                <input type="text" placeholder="title" value={title} onChange={(e) => setTitle(e.target.value)} /> <br />
-                <input type="text" placeholder="name" value={name} onChange={(e) => setName(e.target.value)} /> <br />
-                <input type="email" placeholder="email" value={email} onChange={(e) => setEmail(e.target.value)} /> <br />
-                <input type="tel" placeholder="tel" value={tel} onChange={(e) => setTel(e.target.value)} /> <br />
-                <select name="" id="" placeholder="productType" value={productTypeId} onChange={(e) => setProductTypeId(e.target.value)}> <br />
-                    <option value="dm129qbM9QYUEo3yQ6kv">A001</option>
-                    <option value="NMjN6RdlToeg6w1LNJeq">A002</option>
-                    <option value="OKYId0COQ0MvkE3sUDLy">A003</option>
-                </select><br />
-                <textarea cols={30} rows={40} placeholder="content" value={content} onChange={(e) => setContent(e.target.value)}>
-                </textarea>
+                <div>
+                    <input type="text" placeholder="title" value={title} onChange={(e) => setTitle(e.target.value)} />
+                </div>
+                <div>
+                    <input type="text" placeholder="name" value={name} onChange={(e) => setName(e.target.value)} />
+                </div>
+                <div>
+                    <input type="email" placeholder="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+                </div>
+                <div>
+                    <input type="tel" placeholder="tel" value={tel} onChange={(e) => setTel(e.target.value)} />
+                </div>
+                <div>
+                    <select name="" id="" placeholder="productType" value={productTypeId} onChange={(e) => setProductTypeId(e.target.value)}>
+                        <option value="dm129qbM9QYUEo3yQ6kv">A001</option>
+                        <option value="NMjN6RdlToeg6w1LNJeq">A002</option>
+                        <option value="OKYId0COQ0MvkE3sUDLy">A003</option>
+                    </select>
+                </div>
+                <div>
+                    <textarea cols={30} rows={40} placeholder="content" value={content} onChange={(e) => setContent(e.target.value)}>
+                    </textarea>
+                </div>
                 <Button onClick={send}>send</Button>
             </form>
         </FormWrapper>

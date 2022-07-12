@@ -14,6 +14,7 @@ export const useSetup = () => {
             const productTypes = await productTypesApi.fetchProductTypes();
             dispatch(statusTypesSlice.actions.setStatusTypes(statusTypes));
             dispatch(productTypesSlice.actions.setProductTypes(productTypes));
+            console.log('setup!');
         } catch (e) {
             console.error(e);
         }

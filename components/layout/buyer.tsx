@@ -1,7 +1,6 @@
-import React, { Fragment, ReactElement, useEffect, useState } from 'react';
+import React, { ReactElement } from 'react';
 import { Provider } from 'react-redux';
 import store from '../../store';
-import Layout from '../Layout';
 
 
 type LayoutProps = Required<{ readonly children: ReactElement }>;

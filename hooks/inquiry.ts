@@ -9,7 +9,7 @@ import { inquiriesSlice } from "../store/Inquiries";
 export const useInquiry = () => {
     const dispatch = useDispatch();
 
-    const fetchInquiries = async (queryClauses: QueryClauses): Promise<Inquiry[]> => {
+    const fetchInquiries = async (queryClauses?: QueryClauses): Promise<Inquiry[]> => {
         let inquiries: Inquiry[] = [];
 
         try {
