@@ -12,6 +12,7 @@ import InquiryTable from '../components/base/Inquiry/InquiryTable/InquiryTable';
 import Pagination from '../components/base/Pagination/Pagination';
 import Drawer from '../components/base/Drawer/Drawer';
 import { useInquiry } from '../hooks/inquiry';
+import { IIFE } from '../utils';
 
 
 type HomePageProps = {
@@ -24,12 +25,22 @@ type HomePageProps = {
 // Controller的な役割を果たす
 const HomePage: NextPageWithLayout<HomePageProps> = ({ }) => {
     const { fetchInquiries } = useInquiry();
-    const inquiries = useSelector((state: RootState) => state.inquiries.inquiries);
+    const { inquiries, clauses } = useSelector((state: RootState) => state.inquiries);
 
     useEffect(() => {
-        fetchInquiries();
-        console.log('fetch!');
-    }, [])
+        fetchInquiries({
+            whereClauses: [
+                { fieldName: 'statusTypeId', operator: 'in', fieldValue: [100, 200, 300] }
+            ],
+            orderByClauses: [
+                { fieldName: 'createdAt', direValue: 'asc' },
+            ],
+            limitClause: {
+                limitCnt: 10
+            }
+        });
+        console.log('fetch and set inquiries');
+    }, []);
 
     return (
         <Box>

@@ -1,4 +1,4 @@
-import { WhereFilterOp, OrderByDirection } from "firebase/firestore";
+import { WhereFilterOp, OrderByDirection, QuerySnapshot } from "firebase/firestore";
 
 
 export type WhereClause = {
@@ -12,12 +12,17 @@ export type OrderByClause = {
     direValue: OrderByDirection;
 };
 
+export type StartAtClause = {
+    prevLastInquiryCreatedAt: number;
+};
+
 export type LimitClause = {
     limitCnt: number;
 }
 
 export type QueryClauses = {
-    whereClauses: WhereClause[];
-    orderByClauses: OrderByClause[];
-    limitClause: LimitClause | null;
+    whereClauses?: WhereClause[];
+    orderByClauses?: OrderByClause[];
+    limitClause?: LimitClause | null;
+    startAtClause?: StartAtClause | null;
 }

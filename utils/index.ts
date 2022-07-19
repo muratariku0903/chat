@@ -13,3 +13,9 @@ export const formatDate = (date: Date): string => {
 export const arrRand = <T>(arr: T[]): T => {
     return arr[Math.floor(Math.random() * arr.length)];
 }
+
+// export const IIFE = <T>(cb: (arg: T) => void): void => {
+//     (async () => {
+//         await cb(arg);
+//     })();
+// }

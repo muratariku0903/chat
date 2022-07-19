@@ -10,39 +10,25 @@ const fetchInquiries = async (queryClauses?: QueryClauses): Promise<Inquiry[]> =
     const inquiries: Inquiry[] = [];
     try {
         const colRef = createColRef();
+        console.log(queryClauses);
         const clauses = queryClauses ? createClauses(queryClauses) : [];
         const q = query(colRef, ...clauses);
 
-        // 最後に取得してきたレコードの時間をstartAtにして仕舞えばいいのでは？
-        // 未着手を100として、対応中を２００にする、そして、対応ずみを３００にする
-        // 未着手だけがほしい
-        // where('statusTypeId', '<=', 100),
-        // 未着手と対応中だけがほしい
-        // where('statusTypeId', '<=', 200),
-        // 未着手と対応中と対応済みだけがほしい
-        // where('statusTypeId', '<=', 300),
-        // 未着手と対応済みだけがほしい -> statusTypeId が100から300以内で200は除外
-        // where('statusTypeId', '>=', 100),
-        // where('statusTypeId', '<=', 300),
-        // where('statusTypeId', '!=', 200),
-        const statusQuery = query(colRef, where('statusTypeId', '<=', 200), orderBy('statusTypeId'));
-        const sortQuery = query(colRef, orderBy('createdAt'));
-
+        // クエリカーソルどうしましょ？って話
+        // ソート条件が変わればリセット
+        // 詳細ページから戻ってきた場合とかどうする？またリセットさせて表示するか
+        // 前に戻るボタンが押されたらどうする
         // const q = query(colRef,
-        //     where('statusTypeId', '==', 200),
-        //     // orderBy('statusTypeId'),
+        //     where('statusTypeId', 'in', [100, 200, 300]),
         //     orderBy('createdAt'),
-        //     // where('createdAt', '>', 1),
         //     // limit(5)
         // );
 
-        // await getDocs(q).then(res => {
-        //     console.log(res);
-        // }).catch(e => {
-        //     console.log(e);
-        // });
-
-        // console.log(querySnapshot);
+        await getDocs(q).then(res => {
+            // console.log(res);
+        }).catch(e => {
+            console.log(e);
+        });
 
         (await getDocs(q)).docs.forEach(doc => {
             const inquiry = doc.data() as Inquiry;
@@ -52,6 +38,7 @@ const fetchInquiries = async (queryClauses?: QueryClauses): Promise<Inquiry[]> =
     } catch (e) {
         throw (`Fail fetching inquiries form firestore because: ${e}`);
     } finally {
+        console.log(inquiries);
         return inquiries;
     }
 }
@@ -92,7 +79,7 @@ const addInquiry = async (form: Omit<Inquiry, 'id' | 'statusTypeId' | 'staffId' 
 
 const createClauses = (queryClauses: QueryClauses) => {
     const clauses = [];
-    const { whereClauses, orderByClauses, limitClause } = queryClauses;
+    const { whereClauses, orderByClauses, limitClause, startAtClause } = queryClauses;
 
     if (whereClauses) {
         for (const clause of whereClauses) {
@@ -106,6 +93,10 @@ const createClauses = (queryClauses: QueryClauses) => {
             const { fieldName, direValue } = clause;
             clauses.push(orderBy(fieldName, direValue));
         }
+    }
+
+    if (startAtClause) {
+        clauses.push(startAt('createdAt', startAtClause.prevLastInquiryCreatedAt));
     }
 
     if (limitClause) {
